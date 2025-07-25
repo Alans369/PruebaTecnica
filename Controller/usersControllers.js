@@ -1,4 +1,4 @@
-const Users = require('./usersModels');
+const Users = require('../Model/usersModel');
 
 // Crear un nuevo usuario
 exports.createUser = async (req, res) => {
@@ -15,7 +15,7 @@ exports.createUser = async (req, res) => {
 exports.getAllUsers = async (req, res) => {
   try {
     const users = await Users.readAll();
-    res.status(200).json(users);
+     res.render('Users/Index', { users });
   } catch (error) {
     res.status(500).json({ error: 'Error al obtener los usuarios', details: error.message });
   }

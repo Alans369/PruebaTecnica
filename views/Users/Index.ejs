@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Usuarios</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome para los íconos -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .card {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+        .btn-action {
+            width: 38px;
+            height: 38px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 3px;
+            transition: transform 0.2s;
+        }
+        .btn-action:hover {
+            transform: scale(1.1);
+        }
+        .table-hover tbody tr:hover {
+            background-color: rgba(13, 110, 253, 0.05);
+        }
+        .user-email {
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+        .role-badge {
+            font-size: 0.85em;
+            padding: 0.4em 0.8em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="card-title">Lista de Usuarios</h2>
+                    <a href="/users/create" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Nuevo Usuario
+                    </a>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Email</th>
+                                <th>Rol</th>
+                                <th class="text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% users.forEach(function(user) { %>
+                                <tr>
+                                    <td>
+                                        <%= user.name %>
+                                        <input type="hidden" value="<%= user.id %>" class="user-id">
+                                    </td>
+                                    <td class="user-email">
+                                        <i class="fas fa-envelope me-2"></i>
+                                        <%= user.email %>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info role-badge">
+                                            <%= user.role_id %>
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <button class="btn btn-warning btn-action edit-user" title="Editar">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-danger btn-action delete-user" title="Eliminar">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Script para manejar las acciones -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Manejar click en botón editar
+            document.querySelectorAll('.edit-user').forEach(button => {
+                button.addEventListener('click', function() {
+                    const userId = this.closest('tr').querySelector('.user-id').value;
+                    window.location.href = `/users/edit/${userId}`;
+                });
+            });
+
+            // Manejar click en botón eliminar
+            document.querySelectorAll('.delete-user').forEach(button => {
+                button.addEventListener('click', async function() {
+                    if (confirm('¿Está seguro de que desea eliminar este usuario?')) {
+                        const userId = this.closest('tr').querySelector('.user-id').value;
+                        try {
+                            const response = await fetch(`/users/${userId}`, {
+                                method: 'DELETE'
+                            });
+                            
+                            if (response.ok) {
+                                // Eliminar la fila de la tabla
+                                this.closest('tr').remove();
+                            } else {
+                                alert('Error al eliminar el usuario');
+                            }
+                        } catch (error) {
+                            console.error('Error:', error);
+                            alert('Error al eliminar el usuario');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
