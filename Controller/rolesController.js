@@ -2,10 +2,11 @@ const Roles = require('../Model/rolesModel');
 
 // Crear un nuevo rol
 exports.createRole = async (req, res) => {
+    console.log("Creating role with body:", req.body);
   try {
     const { name } = req.body;
     const role = await Roles.create(name);
-    res.status(201).json(role);
+    res.redirect('/roles'); // Redirigir a la lista de roles después de crear uno nuevo
   } catch (error) {
     res.status(500).json({ error: 'Error al crear el rol', details: error.message });
   }
@@ -15,7 +16,7 @@ exports.createRole = async (req, res) => {
 exports.getAllRoles = async (req, res) => {
   try {
     const roles = await Roles.readAll();
-    res.status(200).json(roles);
+          res.render('roles/Index', { roles });
   } catch (error) {
     res.status(500).json({ error: 'Error al obtener los roles', details: error.message });
   }
