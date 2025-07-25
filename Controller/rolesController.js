@@ -67,3 +67,17 @@ exports.deleteRole = async (req, res) => {
     res.status(500).json({ error: 'Error al eliminar el rol', details: error.message });
   }
 };
+
+exports.showEditForm = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const role = await Roles.readById(id);
+        if (role) {
+            res.render('roles/Édit', { role });
+        } else {
+            res.redirect('/roles');
+        }
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener el rol' });
+    }
+};
