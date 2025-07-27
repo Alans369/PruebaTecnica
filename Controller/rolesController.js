@@ -16,7 +16,8 @@ exports.createRole = async (req, res) => {
 exports.getAllRoles = async (req, res) => {
   try {
     const roles = await Roles.readAll();
-          res.render('roles/Index', { roles });
+    console.log('Roles desde la base de datos:', roles); // <-- Agrega esto
+    res.render('roles/Index', { roles });
   } catch (error) {
     res.status(500).json({ error: 'Error al obtener los roles', details: error.message });
   }

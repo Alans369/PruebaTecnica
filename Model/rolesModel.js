@@ -1,46 +1,27 @@
-const db = require('../config/db');
-class Roles {
+const prisma = require('../prisma/prismaClient');
 
+// Crear un nuevo rol
+exports.create = async (name) => {
+  return await prisma.role.create({ data: { name } });
+};
 
-  constructor(id, name) {
-    this.conexioon= testConnection();
-    this.id = id;
-    this.name = name;
-  }
+// Obtener todos los roles
+exports.readAll = async () => {
+  return await prisma.role.findMany();
+};
 
-  static async create(name) {
-    
-    
-    const [result] = await db.query('INSERT INTO roles (name) VALUES (?)', [name]);
-    return { id: result.insertId, name };
-  }
+// Obtener un rol por ID
+exports.readById = async (id) => {
+  return await prisma.role.findUnique({ where: { id: Number(id) } });
+};
 
-  static async readAll() {
-   
-    const [rows] = await db.query('SELECT * FROM roles');
-    return rows;
-  }
+// Actualizar un rol
+exports.update = async (id, name) => {
+  return await prisma.role.update({ where: { id: Number(id) }, data: { name } });
+};
 
-  static async readById(id) {
-    
-    const [rows] = await db.query('SELECT * FROM roles WHERE id = ?', [id]);
-    return rows[0] || null;
-  }
-
-  static async update(id, name) {
-   
-    const [result] = await db.query('UPDATE roles SET name = ? WHERE id = ?', [name, id]);
-    if (result.affectedRows > 0) {
-      return { id, name };
-    }
-    return null;
-  }
-
-  static async delete(id) {
- 
-    const [result] = await db.query('DELETE FROM roles WHERE id = ?', [id]);
-    return result.affectedRows > 0;
-  }
-}
-
-module.exports = Roles;
+// Eliminar un rol
+exports.delete = async (id) => {
+  const deleted = await prisma.role.delete({ where: { id: Number(id) } });
+  return !!deleted;
+};
