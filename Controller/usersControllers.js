@@ -8,7 +8,11 @@ exports.createUser = async (req, res) => {
     const user = await Users.create(role_id, name, email, password);
     res.redirect('/users'); // Redirige a la lista de usuarios después de crear uno nuevo
   } catch (error) {
-    res.status(500).json({ error: 'Error al crear el usuario', details: error.message });
+    res.render('Users/Create', {
+            errors: error.errors,
+            oldData: req.body,
+            roles: await Roles.readAll()
+        });
   }
 };
 
@@ -70,13 +74,19 @@ exports.deleteUser = async (req, res) => {
   }
 };
 
-// Mostrar el formulario de creación de usuario
+// Mostrar formulario de creación
 exports.showCreateForm = async (req, res) => {
     try {
         const roles = await Roles.readAll();
-        res.render('Users/Create', { roles });
+        res.render('Users/Create', { 
+            roles,
+            errors: null,
+            oldData: null,
+            title: 'Crear Usuario'
+        });
     } catch (error) {
-        res.status(500).json({ error: 'Error al cargar el formulario' });
+        console.error(error);
+        res.status(500).send('Error al cargar el formulario de creación');
     }
 };
 

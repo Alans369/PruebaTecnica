@@ -65,3 +65,11 @@ exports.delete = async (id) => {
   });
   return !!deleted;
 };
+
+exports.findByEmail = async (email) => {
+  return await prisma.user.findUnique({
+    where: {
+      email: email
+    }
+  });
+};

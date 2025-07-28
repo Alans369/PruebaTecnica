@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-
+const { validateUser } = require('../middlewares/userValidation');
 
 /* GET users listing. */
 const { 
@@ -20,14 +20,14 @@ router.get('/', getAllUsers);
 router.get('/create', showCreateForm);
 
 // Crear nuevo usuario
-router.post('/create', createUser);
+router.post('/create',validateUser,createUser);
 
 // Mostrar formulario de edición
 router.get('/edit/:id', showEditForm);
 
 
 // Actualizar usuario
-router.post('/edit/:id', updateUser);
+router.post('/edit/:id', validateUser, updateUser);
 
 
 // Eliminar usuario
