@@ -40,6 +40,19 @@
             font-size: 0.85em;
             padding: 0.4em 0.8em;
         }
+        .password-cell {
+            position: relative;
+        }
+        .toggle-password {
+            padding: 0;
+            color: #6c757d;
+        }
+        .toggle-password:hover {
+            color: #0d6efd;
+        }
+        .password-text {
+            font-family: monospace;
+        }
     </style>
 </head>
 <body>
@@ -59,6 +72,7 @@
                             <tr>
                                 <th>Nombre</th>
                                 <th>Email</th>
+                                <th>Contraseña</th>
                                 <th>Rol</th>
                                 <th class="text-center">Acciones</th>
                             </tr>
@@ -74,6 +88,12 @@
                                         <i class="fas fa-envelope me-2"></i>
                                         <%= user.email %>
                                     </td>
+                                    <td class="password-cell">
+                                        <span class="password-text" style="display: none;"><%= user.password %></span>
+                                        <span class="password-dots">••••••</span>
+                                        <button type="button" class="btn btn-link toggle-password" title="Mostrar/Ocultar contraseña">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
                                     <td>
                                         <span class="badge bg-info role-badge">
                                             <%= user.role.name %>
@@ -101,6 +121,27 @@
     <!-- Script para manejar las acciones -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Manejar la visualización de contraseñas
+            document.querySelectorAll('.toggle-password').forEach(button => {
+                button.addEventListener('click', function() {
+                    const cell = this.closest('.password-cell');
+                    const passwordText = cell.querySelector('.password-text');
+                    const passwordDots = cell.querySelector('.password-dots');
+                    const icon = this.querySelector('i');
+
+                    if (passwordText.style.display === 'none') {
+                        passwordText.style.display = 'block';
+                        passwordDots.style.display = 'none';
+                        icon.classList.remove('fa-eye');
+                        icon.classList.add('fa-eye-slash');
+                    } else {
+                        passwordText.style.display = 'none';
+                        passwordDots.style.display = 'block';
+                        icon.classList.remove('fa-eye-slash');
+                        icon.classList.add('fa-eye');
+                    }
+                });
+            });
             // Manejar click en botón editar
             document.querySelectorAll('.edit-user').forEach(button => {
                 button.addEventListener('click', function() {
