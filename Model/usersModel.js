@@ -1,52 +1,67 @@
-const db = require('../config/db');
 
-class Users {
-  constructor(id, roleid, name, email, password) {
-    this.id = id;
-    this.roleid = roleid;
-    this.name = name;
-    this.email = email;
-    this.password = password;
-  }
 
-  static async create(roleid, name, email, password) {
-  
-    const [result] = await db.query(
-      'INSERT INTO users (role_id, name, email, password) VALUES (?, ?, ?, ?)',
-      [roleid, name, email, password]
-    );
-    return { id: result.insertId, roleid, name, email, password };
-  }
+const prisma = require('../prisma/prismaClient');
 
-  static async readAll() {
-
-    const [rows] = await db.query('SELECT * FROM users');
-    return rows;
-  }
-
-  static async readById(id) {
-
-    const [rows] = await db.query('SELECT * FROM users WHERE id = ?', [id]);
-    return rows[0] || null;
-  }
-
-  static async update(id, roleid, name, email, password) {
-    
-    const [result] = await db.query(
-      'UPDATE users SET role_id = ?, name = ?, email = ?, password = ? WHERE id = ?',
-      [roleid, name, email, password, id]
-    );
-    if (result.affectedRows > 0) {
-      return { id, roleid, name, email, password };
+// Crear un nuevo usuario
+exports.create = async (roleid, name, email, password) => {
+  return await prisma.user.create({
+    data: {
+      role_id: Number(roleid),
+      name,
+      email,
+      password
+    },
+    include: {
+      role: true // Incluye los datos del rol en la respuesta
     }
-    return null;
-  }
+  });
+};
 
-  static async delete(id) {
-   
-    const [result] = await db.query('DELETE FROM users WHERE id = ?', [id]);
-    return result.affectedRows > 0;
-  }
-}
+// Obtener todos los usuarios
+exports.readAll = async () => {
+  return await prisma.user.findMany({
+    include: {
+      role: true // Incluye los datos del rol de cada usuario
+    }
+  });
+};
 
-module.exports = Users;
+// Obtener un usuario por ID
+exports.readById = async (id) => {
+  return await prisma.user.findUnique({
+    where: {
+      id: Number(id)
+    },
+    include: {
+      role: true // Incluye los datos del rol del usuario
+    }
+  });
+};
+
+// Actualizar un usuario
+exports.update = async (id, roleid, name, email, password) => {
+  return await prisma.user.update({
+    where: {
+      id: Number(id)
+    },
+    data: {
+      role_id: Number(roleid),
+      name,
+      email,
+      password
+    },
+    include: {
+      role: true // Incluye los datos del rol en la respuesta
+    }
+  });
+};
+
+// Eliminar un usuario
+exports.delete = async (id) => {
+  const deleted = await prisma.user.delete({
+    where: {
+      id: Number(id)
+    }
+  });
+  return !!deleted;
+};

@@ -1,11 +1,12 @@
 const Users = require('../Model/usersModel');
+const Roles = require('../Model/rolesModel'); // Asegúrate de tener el modelo de Roles requerido
 
 // Crear un nuevo usuario
 exports.createUser = async (req, res) => {
   try {
     const { role_id, name, email, password } = req.body;
     const user = await Users.create(role_id, name, email, password);
-    res.status(201).json(user);
+    res.redirect('/users'); // Redirige a la lista de usuarios después de crear uno nuevo
   } catch (error) {
     res.status(500).json({ error: 'Error al crear el usuario', details: error.message });
   }
@@ -14,9 +15,11 @@ exports.createUser = async (req, res) => {
 // Obtener todos los usuarios
 exports.getAllUsers = async (req, res) => {
   try {
-    const users = await Users.readAll();
-     res.render('Users/Index', { users });
+    const users = await Users.readAll(); // readAll ya incluye la información del rol
+    console.log('Usuarios con roles:', users); // Para ver la estructura de datos
+    res.render('Users/Index', { users });
   } catch (error) {
+    console.error('Error:', error);
     res.status(500).json({ error: 'Error al obtener los usuarios', details: error.message });
   }
 };
@@ -43,7 +46,7 @@ exports.updateUser = async (req, res) => {
     const { role_id, name, email, password } = req.body;
     const updatedUser = await Users.update(id, role_id, name, email, password);
     if (updatedUser) {
-      res.status(200).json(updatedUser);
+      res.redirect('/users'); 
     } else {
       res.status(404).json({ error: 'Usuario no encontrado' });
     }
@@ -65,5 +68,31 @@ exports.deleteUser = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: 'Error al eliminar el usuario', details: error.message });
   }
+};
+
+// Mostrar el formulario de creación de usuario
+exports.showCreateForm = async (req, res) => {
+    try {
+        const roles = await Roles.readAll();
+        res.render('Users/Create', { roles });
+    } catch (error) {
+        res.status(500).json({ error: 'Error al cargar el formulario' });
+    }
+};
+
+// Mostrar el formulario de edición de usuario
+exports.showEditForm = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const user = await Users.readById(id);
+        const roles = await Roles.readAll();
+        if (user) {
+            res.render('Users/Edit', { user, roles });
+        } else {
+            res.redirect('/users');
+        }
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener el usuario' });
+    }
 };
 
