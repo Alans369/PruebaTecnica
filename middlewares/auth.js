@@ -94,11 +94,10 @@ exports.requireAuth = async (req, res, next) => {
             // Decodificar el token para obtener el payload
             const decoded= this.verifyToken(token);
          
-                if(decoded.payload.role == 'admin'){
-                    res.redirect('/users');
-                }else if (decoded.payload.role == 'docente'){
+               if (decoded.payload.role == 'docente'){
                     res.render('index')
                 }
+                
         }
 
 

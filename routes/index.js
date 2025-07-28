@@ -6,7 +6,11 @@ const { requireAuth } = require('../middlewares/auth');
 
 
 /* GET home page. */
-router.get('/',requireAuth);
+router.get('/',requireAuth,async function(req, res, next) {
+
+res.redirect('/users')
+  
+});
 
 router.get('/login',async function(req, res, next) {
 
