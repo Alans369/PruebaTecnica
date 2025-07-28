@@ -1,9 +1,14 @@
 var express = require('express');
 var router = express.Router();
 const {loginUser} = require('../Controller/usersControllers');
+const { requireAuth } = require('../middlewares/auth');
+
+
 
 /* GET home page. */
-router.get('/', async function(req, res, next) {
+router.get('/',requireAuth);
+
+router.get('/login',async function(req, res, next) {
 
 res.render('Login', {
     errors: null,        // Objeto con errores de validación

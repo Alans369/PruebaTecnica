@@ -1,23 +1,24 @@
 var express = require('express');
 var router = express.Router();
+const { requireAuth } = require('../middlewares/auth');
 
 const {ValidateRol} = require('../middlewares/RoleValidations'); // Importa el middleware
 const { createRole, getAllRoles,deleteRole,showEditForm,updateRole } = require('../Controller/rolesController');
 
 // Ruta para ver todos los roles
-router.get('/', getAllRoles);
+router.get('/',requireAuth, getAllRoles);
 
-router.get('/create', function(req, res, next) {
+router.get('/create',requireAuth, function(req, res, next) {
   res.render('roles/Create',{errors:null});
 });
 
-router.put('/:id', updateRole);
+router.put('/:id',requireAuth, updateRole);
 
-router.get('/edit/:id', showEditForm);
+router.get('/edit/:id',requireAuth, showEditForm);
 
-router.post('/create',ValidateRol,createRole);
+router.post('/create',requireAuth,ValidateRol,createRole);
 
-router.delete('/:id', deleteRole);
+router.delete('/:id',requireAuth,deleteRole);
 
 
 

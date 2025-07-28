@@ -1,5 +1,8 @@
 const Users = require('../Model/usersModel');
 const Roles = require('../Model/rolesModel'); // Asegúrate de tener el modelo de Roles requerido
+const { generateTokens } = require('../middlewares/auth');
+
+const config = require('../config/jwt.config');
 
 // Crear un nuevo usuario
 exports.createUser = async (req, res) => {
@@ -122,8 +125,14 @@ exports.showEditForm = async (req, res) => {
             });
         }
 
+         const tokens = generateTokens(user.id, user.role.name);
+
+        // Establecer cookies
+        res.cookie('accessToken', tokens.accessToken, config.cookieOptions);
+        res.cookie('refreshToken', tokens.refreshToken, config.cookieOptions);
+
         
-        res.redirect('/users');
+        res.redirect('/');
 
     } catch (error) {
         console.error(error);
