@@ -73,3 +73,18 @@ exports.findByEmail = async (email) => {
     }
   });
 };
+
+// Verificar credenciales para el login
+exports.verifyLogin = async (email, password) => {
+  return await prisma.user.findFirst({
+    where: {
+      AND: [
+        { email: email },
+        { password: password }
+      ]
+    },
+    include: {
+      role: true // Incluimos los datos del rol para manejar permisos
+    }
+  });
+};

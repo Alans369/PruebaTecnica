@@ -108,3 +108,29 @@ exports.showEditForm = async (req, res) => {
     }
 };
 
+
+ exports.loginUser= async (req, res)=> {
+    try {
+        const { email, password } = req.body;
+        const user = await Users.verifyLogin(email, password);
+        
+        if (!user) {
+            // Usuario no encontrado o credenciales incorrectas
+            return res.render('Login', {
+                error: 'Email o contraseña incorrectos',
+                oldData: { email }
+            });
+        }
+
+        
+        res.redirect('/users');
+
+    } catch (error) {
+        console.error(error);
+        res.render('Login', {
+            error: 'Error al intentar iniciar sesión',
+            oldData: { email: req.body.email }
+        });
+    }
+}
+
