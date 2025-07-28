@@ -97,7 +97,9 @@ exports.showEditForm = async (req, res) => {
         const user = await Users.readById(id);
         const roles = await Roles.readAll();
         if (user) {
-            res.render('Users/Edit', { user, roles });
+            res.render('Users/Edit', { user, roles ,errors: null,
+            oldData: null,
+            title: 'Editar Usuario'});
         } else {
             res.redirect('/users');
         }
