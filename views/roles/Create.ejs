@@ -39,11 +39,17 @@
                     <div class="mb-4">
                         <label for="roleName" class="form-label">Nombre del Rol</label>
                         <input type="text" 
-                               class="form-control form-control-lg" 
+                               class="form-control form-control-lg <%= errors && errors.name ? 'is-invalid' : '' %>" 
                                id="roleName" 
                                name="name" 
                                placeholder="Ingrese el nombre del rol"
+                               value="<%= locals.oldData ? oldData.name : '' %>"
                                required>
+                <% if (errors && errors.name) { %>
+                    <div class="invalid-feedback d-block">
+                        <%= errors.name %>
+                    </div>
+                <% } %>
                     </div>
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-primary btn-lg">

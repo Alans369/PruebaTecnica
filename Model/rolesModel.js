@@ -25,3 +25,12 @@ exports.delete = async (id) => {
   const deleted = await prisma.role.delete({ where: { id: Number(id) } });
   return !!deleted;
 };
+
+// Buscar un rol por nombre
+exports.findByName = async (name) => {
+  return await prisma.role.findFirst({
+    where: {
+      name: name
+    }
+  });
+};
